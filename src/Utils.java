@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Utils {
@@ -17,5 +18,26 @@ public class Utils {
         }
 
         return output.toString();
+    }
+
+    public ArrayList<ElectionResult> parse2016PresidentialResults(String data){
+        ArrayList<ElectionResult> output = new ArrayList<>();
+        String [] row = data.split("\n");
+        for (int i = 1; i < row.length; i++) {
+            String [] elements = row[i].split(",");
+            double votes_dem = Double.parseDouble(elements[1]);
+            double votes_gop = Double.parseDouble(elements[2]);
+            double total_votes = Double.parseDouble(elements[3]);
+            double per_dem = Double.parseDouble(elements[4]);
+            double per_gop = Double.parseDouble(elements[5]);
+            String diff = elements[6];
+            String per_point_diff = elements[7];
+            String state_abbr = elements[8];
+            String county_name = elements[9];
+            int combined_fips = Integer.parseInt(elements[10]);
+            ElectionResult electionResult = new ElectionResult(votes_dem, votes_gop, total_votes, per_dem, per_gop, diff, per_point_diff, state_abbr, county_name, combined_fips);
+            output.add(electionResult);
+        }
+        return output;
     }
 }
