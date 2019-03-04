@@ -1,5 +1,7 @@
+import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,11 +22,31 @@ public class Utils {
         return output.toString();
     }
 
-    public ArrayList<ElectionResult> parse2016PresidentialResults(String data){
+    public static ArrayList<ElectionResult> parse2016PresidentialResults(String data){
         ArrayList<ElectionResult> output = new ArrayList<>();
         String [] row = data.split("\n");
         for (int i = 1; i < row.length; i++) {
+            int replaceCommaIndex = row[i].indexOf("\"", row[i].indexOf("\"") + 1);
+//            System.out.println(row[i].indexOf("\""));
+//            System.out.println(replaceCommaIndex);
+            String wordWithoutComma = row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1);
+//
+//            wordWithoutComma = removeCharAt(wordWithoutComma, wordWithoutComma.indexOf(","));
+//            System.out.println(wordWithoutComma);
+//            System.out.println(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1));
+           // System.out.println(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1));
+          System.out.println(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).substring(0, row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).indexOf(",")) + row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).substring(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).indexOf(",") + 1));
+
+            String a = row[i].replaceFirst(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1), row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).substring(0, row[i].indexOf(",")) + row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1).substring(row[i].indexOf(",") + 1));
+            row[i] = a;
+
+            System.out.println(row[i].substring(row[i].indexOf("\"") - 1, replaceCommaIndex + 1));
+
+
+        //System.out.println(row.length);
+
             String [] elements = row[i].split(",");
+            System.out.println(elements.length);
             double votes_dem = Double.parseDouble(elements[1]);
             double votes_gop = Double.parseDouble(elements[2]);
             double total_votes = Double.parseDouble(elements[3]);
@@ -39,5 +61,9 @@ public class Utils {
             output.add(electionResult);
         }
         return output;
+    }
+
+    public static String removeCharAt(String s, int pos) {
+        return s.substring(0, pos) + s.substring(pos + 1);
     }
 }
