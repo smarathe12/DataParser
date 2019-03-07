@@ -5,13 +5,13 @@ public class ElectionResult {
     private double total_votes;
     private double per_dem;
     private double per_gop;
-    private String diff;
-    private String per_point_diff;
+    private int diff;
+    private double per_point_diff;
     private String state_abbr;
     private String county_name;
     private int combined_fips;
 
-    public ElectionResult(double votes_dem, double votes_gop, double total_votes, double per_dem, double per_gop, String diff, String per_point_diff, String state_abbr, String county_name, int combined_fips) {
+    public ElectionResult(double votes_dem, double votes_gop, double total_votes, double per_dem, double per_gop, int diff, double per_point_diff, String state_abbr, String county_name, int combined_fips) {
         this.votes_dem = votes_dem;
         this.votes_gop = votes_gop;
         this.total_votes = total_votes;
@@ -64,19 +64,17 @@ public class ElectionResult {
         this.per_gop = per_gop;
     }
 
-    public String getDiff() {
+    public int getDiff() {
         return diff;
     }
 
-    public void setDiff(String diff) {
+    public void setDiff(int diff) {
         this.diff = diff;
     }
 
-    public String getPer_point_diff() {
-        return per_point_diff;
-    }
+    public double getPer_point_diff() { return per_point_diff; }
 
-    public void setPer_point_diff(String per_point_diff) {
+    public void setPer_point_diff(double per_point_diff) {
         this.per_point_diff = per_point_diff;
     }
 
@@ -112,11 +110,12 @@ public class ElectionResult {
                 ", total_votes=" + total_votes +
                 ", per_dem=" + per_dem +
                 ", per_gop=" + per_gop +
-                ", diff='" + diff + '\'' +
-                ", per_point_diff='" + per_point_diff + '\'' +
+                ", diff=" + diff +
+                ", per_point_diff=" + per_point_diff +
                 ", state_abbr='" + state_abbr + '\'' +
                 ", county_name='" + county_name + '\'' +
                 ", combined_fips=" + combined_fips +
                 '}';
     }
 }
+

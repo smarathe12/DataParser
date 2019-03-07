@@ -27,10 +27,7 @@ public class Utils {
         String[] row = data.split("\n");
         for (int i = 1; i < row.length; i++) {
             if (row[i].indexOf("\"") != -1) {
-                int replaceCommaIndex = row[i].indexOf("\"", row[i].indexOf("\"") + 1);
-                String wordWithoutComma = row[i].substring(row[i].indexOf("\"") + 1, replaceCommaIndex);
-                wordWithoutComma = wordWithoutComma.replace(",", "");
-                row[i] = row[i].replace(row[i].substring(row[i].indexOf("\""), replaceCommaIndex + 1), wordWithoutComma);
+                row[i] = correctedString(row[i]);
             }
             String[] elements = row[i].split(",");
             double votes_dem = Double.parseDouble(elements[1]);
@@ -38,8 +35,8 @@ public class Utils {
             double total_votes = Double.parseDouble(elements[3]);
             double per_dem = Double.parseDouble(elements[4]);
             double per_gop = Double.parseDouble(elements[5]);
-            String diff = elements[6];
-            String per_point_diff = elements[7];
+            int diff = Integer.parseInt(elements[6]);
+            double per_point_diff = Double.parseDouble(elements[7].substring(0, elements[7].length() - 1));
             String state_abbr = elements[8];
             String county_name = elements[9];
             int combined_fips = Integer.parseInt(elements[10]);
@@ -49,6 +46,12 @@ public class Utils {
         return output;
     }
 
+    private static String correctedString(String s) {
+        int replaceCommaIndex = s.indexOf("\"", s.indexOf("\"") + 1);
+        String wordWithoutComma = s.substring(s.indexOf("\"") + 1, replaceCommaIndex);
+        wordWithoutComma = wordWithoutComma.replace(",", "");
+        return s.replace(s.substring(s.indexOf("\""), replaceCommaIndex + 1), wordWithoutComma);
+    }
+
 
 }
-
