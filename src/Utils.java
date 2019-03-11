@@ -22,6 +22,61 @@ public class Utils {
         return output.toString();
     }
 
+    public static DataManager makeDataManager(String electionResults, String education, String employment) {
+
+        ArrayList<States> states = new ArrayList<>();
+        String electionResultsData = normalizeLineBreaks(electionResults);
+        String educuationData = normalizeLineBreaks(education);
+        String employmentData = normalizeLineBreaks(employment);
+
+        String[] electionElements = electionResultsData.split("\n");
+        String[] educationElements = educuationData.split("\n");
+        String[] employmentElements = employmentData.split("\n");
+        String[] data;
+        for (int i = 1; i < electionElements.length; i++) {
+            data = electionElements[i].split(",");
+            String state = getState(data);
+            boolean doesStateExist = false;
+            for (int j = 0; j < states.size(); j++) {
+                if (states.get(i).getName().equals(state)) {
+                    doesStateExist = true;
+                }
+
+            }
+            if (doesStateExist == false) {
+                States s = new States(state, new ArrayList<County>());
+                states.add(s);
+            }
+
+            String[] electionData;
+            for (int a = 1; a < electionElements.length; a++) {
+                electionData = electionElements[a].split(",");
+
+                for (int r = 0; r < states.size(); r++) {
+                    if (getState(electionData).equals(states.get(i).getName())) {
+
+                        ArrayList<County> counties = states.get(i).getCounties();
+                        int differenceInCommas = data.length - 11;
+                        String countyName = data[9 + differenceInCommas];
+                        int fips = Integer.parseInt(data[10 + differenceInCommas].trim());
+                        boolean doesCountyExist = false;
+                        for (County c : counties) {
+                            if (c.getName().equals(countyName) && c.getFips() == fips) {
+                                doesCountyExist = true;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+
+        }
+        return new DataManager(states);
+    }
+
+
     public static ArrayList<ElectionResult> parse2016PresidentialResults(String data) {
         ArrayList<ElectionResult> output = new ArrayList<>();
         String[] row = data.split("\n");
@@ -46,12 +101,55 @@ public class Utils {
         return output;
     }
 
+    public static ArrayList<Education2016> parseEducation(String data) {
+        ArrayList<Education2016> output = new ArrayList<>();
+        String[] row = data.split("\n");
+        for (int i = 1; i < row.length; i++) {
+            if (row[i].indexOf("\"") != -1) {
+                row[i] = correctedString(row[i]);
+            }
+            String[] elements = row[i].split(",");
+            System.out.println(elements.length);
+            double noHighSchool = Double.parseDouble(elements[42]);
+            double onlyHighSchool = Double.parseDouble(elements[39]);
+            double someCollege = Double.parseDouble(elements[40]);
+            double bachelorsOrMore = Double.parseDouble(elements[41]);
+            Education2016 education2016 = new Education2016(noHighSchool, onlyHighSchool, someCollege, bachelorsOrMore);
+            output.add(education2016);
+        }
+        return output;
+    }
+
+
+    public static ArrayList<ElectionResult> parseUnemployment(String data) {
+
+
+    }
+
     private static String correctedString(String s) {
         int replaceCommaIndex = s.indexOf("\"", s.indexOf("\"") + 1);
         String wordWithoutComma = s.substring(s.indexOf("\"") + 1, replaceCommaIndex);
         wordWithoutComma = wordWithoutComma.replace(",", "");
         return s.replace(s.substring(s.indexOf("\""), replaceCommaIndex + 1), wordWithoutComma);
     }
+
+    private static String normalizeLineBreaks(String str) {
+        str = str.replace('\u00A0', ' ');
+        str = str.replace('\u2007', ' ');
+        str = str.replace('\u202F', ' ');
+        str = str.replace('\uFEFF', ' ');
+
+        return str.replace("\r\n", "\n").replace('\r', '\n');
+    }
+
+    private static String getState(String[] lineData) {
+        int differenceInCommas = lineData.length - 11;
+        return lineData[8 + differenceInCommas];
+
+    }
+
+
+
 
 
 }
